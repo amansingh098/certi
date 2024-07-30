@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Search and Download</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #f0f0f0;
+        }
+        .search-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        #search-bar {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .certificate-item {
+            position: relative;
+            width: 80%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: white;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .certificate-container {
+            position: relative;
+            width: 100%;
+        }
+        .certificate-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .name {
+            position: absolute;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 50px;
+            color: #004AAD;
+            text-align: center;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .download-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #004AAD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" placeholder="Search by name..." id="search-bar" onkeyup="filterCertificates()">
+    </div>
+    <div id="certificates-list">
+        <!-- Certificates will be dynamically added here -->
+    </div>
+    <button class="download-btn" onclick="downloadAllCertificates()">Download All Certificates</button>
+
+    <script>
+        // List of attendees
+        const attendees = [
+            "Ellendula Rishik",
+            "Shaik Jubeda",
+            "Shaik.Bavigadda.Aliya bee",
+            "S Thanuja",
+            "Rashmika Mahindrakar",
+            "RALLABANDI BHARGAVA",
+            "Punnam Hemanth",
+            "Athiqa",
+            "Pasam Venkata Lokesh",
+            "Taladi Venkata Yeswanth",
+            "Jatin lella",
+            "PUPPALA MUKESH BABU",
+            "Palle jashwanth reddy",
+            "P Sai Srujana",
+            "J.Rishika",
+            "Lingaram Sindhu goud",
+            "Shashi",
+            "Jampala Tharun",
+            "P mallesh",
+            "Krishna Dhumale",
+            "Ratan pradeep",
+            "Santhapoor Sriram varshith",
+            "Kukutla Pranathi",
+            "Erupa Vinay Chandra",
+            "Pogalla Bhargavi",
+            "Pogalla Sreeja",
+            "Hasini Machagiri",
+            "Lakshmi Vangari",
+            "SRIYA SUSHIL",
+            "SASANAKOTA VINEEL KRISHNA",
+            "Akarapu Sravani",
+            "Tirumani Ranavaditya",
+            "DURGAM RAGHU JYOTHIRMAI",
+            "Saipriya Katakam",
+            "Sama Priyanka Reddy",
+            "Sadhika Busireddy",
+            "Mohan Abhijeeth Majety",
+            "JELLA KEERTHANA",
+            "Navneeth",
+            "P Navya",
+            "Akshaya Bethala",
+            "M Sankeerthana",
+            "VAMSHI MEDI",
+            "Manikonda Parthasaradhi",
+            "Siripuram laharika",
+            "Sai Tharesh Reddy V",
+            "SHRAGHVIN MOYYA",
+            "Vinod paul Guvva",
+            "Amulya Pagidimarri",
+            "Shashank Reddy Panumati",
+            "Medara Preethi",
+            "Kontham siriseja",
+            "Shaik Sania Muskaan",
+            "Thakkashila Padmavathi",
+            "Yerlam Sai Deepika",
+            "Thota Niharika",
+            "Thatiparti Ashritha",
+            "Manikyala Dinesh Karthik",
+            "KOLIPAKA RISHWANTH",
+            "Jatin Jangir",
+            "BANDI SAI CHARAN",
+            "Sushanth kumar Bejjenki",
+            "ANDE ABHILASH",
+            "Navya sree akinapally",
+            "Pranathi Cheruvupalli",
+            "Boddu Siri",
+            "Gundapu siddartha",
+            "Chennarapu Jyothika",
+            "Momidala Anitha",
+            "Bogireddy Lahari",
+            "G.Govardhan reddy",
+            "BUSARAPU SAI KRISHNA",
+            "Bhuvana mani",
+            "Y.Ashmitha",
+            "Kandagatla Sai Praneeth",
+            "Adhul Thiruven Maruthi",
+            "Moguluri Mallishwari",
+            "Geggalapally sahasra",
+            "R.srimanya",
+            "G.Sunhitha Reddy",
+            "Kamireddy Yamini Swetha",
+            "P.kavya",
+            "MANASA DANDA",
+            "Shaik Yasmin",
+            "Akshaya Reddy Anna Reddy",
+            "Patan Nasira",
+            "Jagatab Pavithra",
+            "Kaza Santosh Vinay",
+            "Kandhukuri sindhu",
+            "Golla sravani",
+            "M.RUCHITHA REDDY",
+            "Kummari Rohini",
+            "Sneha varshini Sathavelli",
+            "Thopi reddy geethanjali",
+            "Mulla Yesra Ameena",
+            "indukurisaivikasvarma",
+            "Koushik",
+            "Vara lakshmi",
+            "Kontham meghana",
+            "M Gayathri Bai",
+            "Vushakola phanindra",
+            "Mahanthu. Veda Manikanta",
+            "Beauty Kumari",
+            "Bellam Sai Dinesh Reddy",
+            "B.SANJUNA"
+        ];
+
+        // Function to create a certificate div for a given name
+        function createCertificate(name) {
+            return `
+                <div class="certificate-item">
+                    <div class="certificate-container">
+                        <img src="./image.png" alt="Certificate" class="certificate-image">
+                        <div class="name">${name}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to filter certificates based on search input
+        function filterCertificates() {
+            const searchInput = document.getElementById('search-bar').value.toLowerCase();
+            const filteredNames = attendees.filter(name => name.toLowerCase().includes(searchInput));
+            const certificatesList = document.getElementById('certificates-list');
+            certificatesList.innerHTML = filteredNames.map(createCertificate).join('');
+        }
+
+        // Function to download all certificates as JPGs
+        function downloadAllCertificates() {
+            const certificateItems = document.querySelectorAll('.certificate-item .certificate-container');
+            
+            certificateItems.forEach((certificateElement, index) => {
+                html2canvas(certificateElement).then(canvas => {
+                    const imgData = canvas.toDataURL('image/jpeg');
+                    const link = document.createElement('a');
+                    link.href = imgData;
+                    const name = attendees[index];
+                    link.download = `${name.replace(/\s+/g, '_')}_Certificate.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+            });
+        }
+
+        // Initial display of certificates
+        filterCertificates(); // Call this to display the filtered certificates based on initial search input
+    </script>
+</body>
+</html>
