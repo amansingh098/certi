@@ -17,21 +17,25 @@
             align-items: center;
             justify-content: flex-start;
             background-color: #f0f0f0;
+            font-size: 16px; /* Base font size */
         }
         .search-container {
             width: 100%;
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            padding: 0 10px; /* Added padding for mobile */
         }
         #search-bar {
-            width: 300px;
+            width: 100%;
+            max-width: 300px; /* Maximum width for desktop */
             padding: 10px;
             font-size: 16px;
+            box-sizing: border-box; /* Ensures padding doesn't affect total width */
         }
         .certificate-item {
             position: relative;
-            width: 80%;
+            width: 90%;
             max-width: 1000px;
             display: flex;
             flex-direction: column;
@@ -42,6 +46,7 @@
             background-color: white;
             text-align: center;
             margin: 10px 0;
+            box-sizing: border-box; /* Ensures padding doesn't affect total width */
         }
         .certificate-container {
             position: relative;
@@ -55,15 +60,15 @@
         .name {
             position: absolute;
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 50px;
             color: #004AAD;
             text-align: center;
             width: 100%;
             top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .download-btn {
-            margin-top: 10px;
+            margin-top: 20px;
             padding: 10px 20px;
             background-color: #004AAD;
             color: white;
@@ -71,8 +76,22 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            body, html {
+                font-size: 14px; /* Slightly smaller base font size for smaller screens */
+            }
+            .certificate-item {
+                padding: 10px; /* Less padding on smaller screens */
+            }
+            .name {
+                font-size: 80%; /* Reduce font size for names on small screens */
+            }
+        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="search-container">
@@ -81,125 +100,54 @@
     <div id="certificates-list">
         <!-- Certificates will be dynamically added here -->
     </div>
-    <button class="download-btn" onclick="downloadAllCertificates()">Download All Certificates</button>
+    <button class="download-btn" onclick="downloadAllCertificates()">Download Certificates</button>
 
     <script>
         // List of attendees
         const attendees = [
-            "Ellendula Rishik",
-            "Shaik Jubeda",
-            "Shaik.Bavigadda.Aliya bee",
-            "S Thanuja",
-            "Rashmika Mahindrakar",
-            "RALLABANDI BHARGAVA",
-            "Punnam Hemanth",
-            "Athiqa",
-            "Pasam Venkata Lokesh",
-            "Taladi Venkata Yeswanth",
-            "Jatin lella",
-            "PUPPALA MUKESH BABU",
-            "Palle jashwanth reddy",
-            "P Sai Srujana",
-            "J.Rishika",
-            "Lingaram Sindhu goud",
-            "Shashi",
-            "Jampala Tharun",
-            "P mallesh",
-            "Krishna Dhumale",
-            "Ratan pradeep",
-            "Santhapoor Sriram varshith",
-            "Kukutla Pranathi",
-            "Erupa Vinay Chandra",
-            "Pogalla Bhargavi",
-            "Pogalla Sreeja",
-            "Hasini Machagiri",
-            "Lakshmi Vangari",
-            "SRIYA SUSHIL",
-            "SASANAKOTA VINEEL KRISHNA",
-            "Akarapu Sravani",
-            "Tirumani Ranavaditya",
-            "DURGAM RAGHU JYOTHIRMAI",
-            "Saipriya Katakam",
-            "Sama Priyanka Reddy",
-            "Sadhika Busireddy",
-            "Mohan Abhijeeth Majety",
-            "JELLA KEERTHANA",
-            "Navneeth",
-            "P Navya",
-            "Akshaya Bethala",
-            "M Sankeerthana",
-            "VAMSHI MEDI",
-            "Manikonda Parthasaradhi",
-            "Siripuram laharika",
-            "Sai Tharesh Reddy V",
-            "SHRAGHVIN MOYYA",
-            "Vinod paul Guvva",
-            "Amulya Pagidimarri",
-            "Shashank Reddy Panumati",
-            "Medara Preethi",
-            "Kontham siriseja",
-            "Shaik Sania Muskaan",
-            "Thakkashila Padmavathi",
-            "Yerlam Sai Deepika",
-            "Thota Niharika",
-            "Thatiparti Ashritha",
-            "Manikyala Dinesh Karthik",
-            "KOLIPAKA RISHWANTH",
-            "Jatin Jangir",
-            "BANDI SAI CHARAN",
-            "Sushanth kumar Bejjenki",
-            "ANDE ABHILASH",
-            "Navya sree akinapally",
-            "Pranathi Cheruvupalli",
-            "Boddu Siri",
-            "Gundapu siddartha",
-            "Chennarapu Jyothika",
-            "Momidala Anitha",
-            "Bogireddy Lahari",
-            "G.Govardhan reddy",
-            "BUSARAPU SAI KRISHNA",
-            "Bhuvana mani",
-            "Y.Ashmitha",
-            "Kandagatla Sai Praneeth",
-            "Adhul Thiruven Maruthi",
-            "Moguluri Mallishwari",
-            "Geggalapally sahasra",
-            "R.srimanya",
-            "G.Sunhitha Reddy",
-            "Kamireddy Yamini Swetha",
-            "P.kavya",
-            "MANASA DANDA",
-            "Shaik Yasmin",
-            "Akshaya Reddy Anna Reddy",
-            "Patan Nasira",
-            "Jagatab Pavithra",
-            "Kaza Santosh Vinay",
-            "Kandhukuri sindhu",
-            "Golla sravani",
-            "M.RUCHITHA REDDY",
-            "Kummari Rohini",
-            "Sneha varshini Sathavelli",
-            "Thopi reddy geethanjali",
-            "Mulla Yesra Ameena",
-            "indukurisaivikasvarma",
-            "Koushik",
-            "Vara lakshmi",
-            "Kontham meghana",
-            "M Gayathri Bai",
-            "Vushakola phanindra",
-            "Mahanthu. Veda Manikanta",
-            "Beauty Kumari",
-            "Bellam Sai Dinesh Reddy",
+            "Ellendula Rishik", "Shaik Jubeda", "Shaik.Bavigadda.Aliya bee", "S Thanuja", "Rashmika Mahindrakar",
+            "RALLABANDI BHARGAVA", "Punnam Hemanth", "Athiqa", "Pasam Venkata Lokesh", "Taladi Venkata Yeswanth",
+            "Jatin lella", "PUPPALA MUKESH BABU", "Palle jashwanth reddy", "P Sai Srujana", "J.Rishika",
+            "Lingaram Sindhu goud", "Shashi", "Jampala Tharun", "P mallesh", "Krishna Dhumale", "Ratan pradeep",
+            "Santhapoor Sriram varshith", "Kukutla Pranathi", "Erupa Vinay Chandra", "Pogalla Bhargavi", "Pogalla Sreeja",
+            "Hasini Machagiri", "Lakshmi Vangari", "SRIYA SUSHIL", "SASANAKOTA VINEEL KRISHNA", "Akarapu Sravani",
+            "Tirumani Ranavaditya", "DURGAM RAGHU JYOTHIRMAI", "Saipriya Katakam", "Sama Priyanka Reddy",
+            "Sadhika Busireddy", "Mohan Abhijeeth Majety", "JELLA KEERTHANA", "Navneeth", "P Navya",
+            "Akshaya Bethala", "M Sankeerthana", "VAMSHI MEDI", "Manikonda Parthasaradhi", "Siripuram laharika",
+            "Sai Tharesh Reddy V", "SHRAGHVIN MOYYA", "Vinod paul Guvva", "Amulya Pagidimarri", "Shashank Reddy Panumati",
+            "Medara Preethi", "Kontham siriseja", "Shaik Sania Muskaan", "Thakkashila Padmavathi", "Yerlam Sai Deepika",
+            "Thota Niharika", "Thatiparti Ashritha", "Manikyala Dinesh Karthik", "KOLIPAKA RISHWANTH", "Jatin Jangir",
+            "BANDI SAI CHARAN", "Sushanth kumar Bejjenki", "ANDE ABHILASH", "Navya sree akinapally", "Pranathi Cheruvupalli",
+            "Boddu Siri", "Gundapu siddartha", "Chennarapu Jyothika", "Momidala Anitha", "Bogireddy Lahari",
+            "G.Govardhan reddy", "BUSARAPU SAI KRISHNA", "Bhuvana mani", "Y.Ashmitha", "Kandagatla Sai Praneeth",
+            "Adhul Thiruven Maruthi", "Moguluri Mallishwari", "Geggalapally sahasra", "R.srimanya", "G.Sunhitha Reddy",
+            "Kamireddy Yamini Swetha", "P.kavya", "MANASA DANDA", "Shaik Yasmin", "Akshaya Reddy Anna Reddy",
+            "Patan Nasira", "Jagatab Pavithra", "Kaza Santosh Vinay", "Kandhukuri sindhu", "Golla sravani",
+            "M.RUCHITHA REDDY", "Kummari Rohini", "Sneha varshini Sathavelli", "Thopi reddy geethanjali",
+            "Mulla Yesra Ameena", "indukurisaivikasvarma", "Koushik", "Vara lakshmi", "Kontham meghana",
+            "M Gayathri Bai", "Vushakola phanindra", "Mahanthu. Veda Manikanta", "Beauty Kumari", "Bellam Sai Dinesh Reddy",
             "B.SANJUNA"
         ];
 
         // Function to create a certificate div for a given name
         function createCertificate(name) {
+            // Set initial font size
+            let fontSize = 50;
+            // Calculate the length of the name and adjust the font size
+            if (name.length > 20) {
+                fontSize = 40;
+            }
+            if (name.length > 30) {
+                fontSize = 30;
+            }
+
             return `
                 <div class="certificate-item">
                     <div class="certificate-container">
                         <img src="./image.png" alt="Certificate" class="certificate-image">
-                        <div class="name">${name}</div>
+                        <div class="name" style="font-size: ${fontSize}px;">
+                            ${name}
+                        </div>
                     </div>
                 </div>
             `;
@@ -213,21 +161,30 @@
             certificatesList.innerHTML = filteredNames.map(createCertificate).join('');
         }
 
-        // Function to download all certificates as JPGs
+        // Function to download all certificates as PDF
         function downloadAllCertificates() {
+            const { jsPDF } = window.jspdf; // Import jsPDF from the library
+            const pdf = new jsPDF(); // Create new jsPDF instance
+
             const certificateItems = document.querySelectorAll('.certificate-item .certificate-container');
-            
+            const promises = [];
+
             certificateItems.forEach((certificateElement, index) => {
-                html2canvas(certificateElement).then(canvas => {
+                promises.push(html2canvas(certificateElement).then(canvas => {
                     const imgData = canvas.toDataURL('image/jpeg');
-                    const link = document.createElement('a');
-                    link.href = imgData;
-                    const name = attendees[index];
-                    link.download = `${name.replace(/\s+/g, '_')}_Certificate.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
+
+                    if (index > 0) {
+                        pdf.addPage(); // Add a new page for subsequent certificates
+                    }
+
+                    pdf.addImage(imgData, 'JPEG', 10, 10, 180, 130); // Adjust coordinates and dimensions as needed
+                }));
+            });
+
+            Promise.all(promises).then(() => {
+                pdf.save('All_Certificates.pdf'); // Save PDF with a given name
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
             });
         }
 
